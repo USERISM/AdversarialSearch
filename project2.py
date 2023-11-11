@@ -31,9 +31,9 @@ class Node:
             self.position = (600,20) # The position of the root node           
         else:
             if side == "L":
-                self.position = (parent.position[0] -100 // depth,parent.position[1] + 100 ) # The position of the node if it's a left child        
+                self.position = (parent.position[0] -50 *depth,parent.position[1] + 100 ) # The position of the node if it's a left child        
             else:
-                self.position = (parent.position[0] +100 // depth,parent.position[1] + 100 ) # The position of the node if it's a right child
+                self.position = (parent.position[0] +50 *depth,parent.position[1] + 100 ) # The position of the node if it's a right child
 
     def display(self, color, player):
         pass
@@ -42,12 +42,28 @@ class Tree:
     def __init__(self):
         self.root_node = Node(parent=None)
                       
-    def createEmptyTree(self, node, depth, values):     
-        if depth == 0 or not values:
+    #def createEmptyTree(self, node, depth, values):     
+    #    if depth == 0 or not values:
+    #        return
+    #    else:
+    #        node.leftChild = Node(parent=node, side="L", depth=depth, value=values.pop(0))
+    #        node.rightChild = Node(parent=node, side="R", depth=depth, value=values.pop(0))
+    def createEmptyTree(self, node, depth, values):
+        if depth == 0 or depth > 5:  # Stop if depth reaches 5
             return
         else:
-            node.leftChild = Node(parent=node, side="L", depth=depth, value=values.pop(0))
-            node.rightChild = Node(parent=node, side="R", depth=depth, value=values.pop(0))
+            if depth == 1:  # At depth 1 (leaf nodes), add values
+                if values:
+                    node.leftChild = Node(parent=node, side="L", depth=depth, value=values.pop(0))
+                    if values:
+                        node.rightChild = Node(parent=node, side="R", depth=depth, value=values.pop(0))
+            else:  # Continue constructing the tree
+                node.leftChild = Node(parent=node, side="L", depth=depth, value=None)
+                node.rightChild = Node(parent=node, side="R", depth=depth, value=None)
+                self.createEmptyTree(node.leftChild, depth - 1, values)
+                self.createEmptyTree(node.rightChild, depth - 1, values)
+
+
     #func to draw the motalat    
     @staticmethod
     def draw_triangle(surface, x, y):
